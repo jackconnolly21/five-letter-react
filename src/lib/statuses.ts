@@ -1,6 +1,6 @@
 import { solution, unicodeSplit } from './words'
 
-export type CharStatus = 'absent' | 'present' | 'correct'
+export type CharStatus = 'absent' | 'present' | 'correct' | 'guessed'
 export type NewCharStatus = 'none' | 'invalid' | 'absent'
 export type ResultStatus = 'zero' | 'medium' | 'high' | 'correct'
 
@@ -22,22 +22,11 @@ export const getStatuses = (
   const splitSolution = unicodeSplit(solution)
 
   guesses.forEach((word) => {
-    unicodeSplit(word).forEach((letter, i) => {
-      if (!splitSolution.includes(letter)) {
-        // make status absent
-        return (charObj[letter] = 'absent')
-      }
+    unicodeSplit(word).forEach((c) => (charObj[c] = 'guessed'))
 
-      if (letter === splitSolution[i]) {
-        // make status correct
-        return (charObj[letter] = 'correct')
-      }
-
-      if (charObj[letter] !== 'correct') {
-        // make status present
-        return (charObj[letter] = 'present')
-      }
-    })
+    if (unicodeSplit(word).every((c) => !splitSolution.includes(c))) {
+      unicodeSplit(word).forEach((c) => (charObj[c] = 'absent'))
+    }
   })
 
   return charObj

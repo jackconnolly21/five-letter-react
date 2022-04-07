@@ -1,6 +1,5 @@
 # TODO
 
-- Get errors to go away!!
-
-- make keyboard at bottom and grid scrolls
 - update share method
+- update keyboard statuses (if 0, and if guessed)
+- animate result?

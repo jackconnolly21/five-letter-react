@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 import classnames from 'classnames'
 import { CharStatus } from '../../lib/statuses'
 import { MAX_WORD_LENGTH, REVEAL_TIME_MS } from '../../constants/settings'
-import { getStoredIsHighContrastMode } from '../../lib/localStorage'
 
 type Props = {
   children?: ReactNode
@@ -29,6 +28,7 @@ export const Key = ({
       'transition ease-in-out': isRevealing,
       'bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 active:bg-slate-400':
         !status,
+      'bg-slate-300 dark:bg-slate-700 text-white': status === 'guessed',
       'bg-slate-400 dark:bg-slate-800 text-white': status === 'absent',
     }
   )
