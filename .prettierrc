@@ -1,2 +1,6 @@
-singleQuote: true
-semi: false
+{
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "tabWidth": 2
+}

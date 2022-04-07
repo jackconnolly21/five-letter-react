@@ -3,6 +3,7 @@ import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
+import { MYSTERY_ORDER } from '../constants/mysteryOrder'
 
 export const isWordInWordList = (word: string) => {
   return (
@@ -75,16 +76,17 @@ export const localeAwareUpperCase = (text: string) => {
 }
 
 export const getWordOfDay = () => {
-  // January 1, 2022 Game Epoch
-  const epochMs = new Date(2022, 0).valueOf()
+  // April 1, 2022 Game Epoch
+  const epochMs = new Date(2022, 3, 1).valueOf()
   const now = Date.now()
   const msInDay = 86400000
-  const index = Math.floor((now - epochMs) / msInDay)
-  const nextday = (index + 1) * msInDay + epochMs
+  const orderIndex = Math.floor((now - epochMs) / msInDay)
+  const nextday = (orderIndex + 1) * msInDay + epochMs
+  const mysteryIndex = MYSTERY_ORDER[orderIndex]
 
   return {
-    solution: localeAwareUpperCase(WORDS[index % WORDS.length]),
-    solutionIndex: index,
+    solution: localeAwareUpperCase(WORDS[mysteryIndex % WORDS.length]),
+    solutionIndex: mysteryIndex,
     tomorrow: nextday,
   }
 }

@@ -1,0 +1,6 @@
+# TODO
+
+- Get errors to go away!!
+
+- make keyboard at bottom and grid scrolls
+- update share method

@@ -9,6 +9,7 @@ export const EmptyRow = () => {
       {emptyCells.map((_, i) => (
         <Cell key={i} />
       ))}
+      <Cell key={MAX_WORD_LENGTH} />
     </div>
   )
 }

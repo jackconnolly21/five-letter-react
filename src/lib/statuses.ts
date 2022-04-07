@@ -1,6 +1,19 @@
 import { solution, unicodeSplit } from './words'
 
 export type CharStatus = 'absent' | 'present' | 'correct'
+export type NewCharStatus = 'none' | 'invalid' | 'absent'
+export type ResultStatus = 'zero' | 'medium' | 'high' | 'correct'
+
+export const getGuessScore = (guess: string) => {
+  if (guess === solution) {
+    return 6
+  }
+
+  const setSolution = new Set(unicodeSplit(solution))
+  const setGuess = new Set(unicodeSplit(guess))
+
+  return Array.from(setGuess).filter((c) => setSolution.has(c)).length
+}
 
 export const getStatuses = (
   guesses: string[]
@@ -16,12 +29,12 @@ export const getStatuses = (
       }
 
       if (letter === splitSolution[i]) {
-        //make status correct
+        // make status correct
         return (charObj[letter] = 'correct')
       }
 
       if (charObj[letter] !== 'correct') {
-        //make status present
+        // make status present
         return (charObj[letter] = 'present')
       }
     })
