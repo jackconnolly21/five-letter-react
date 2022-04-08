@@ -213,14 +213,14 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      <Navbar
-        setIsInfoModalOpen={setIsInfoModalOpen}
-        setIsStatsModalOpen={setIsStatsModalOpen}
-        setIsSettingsModalOpen={setIsSettingsModalOpen}
-      />
+    <div className="h-[90vh] flex flex-col">
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow h-4/5">
-        <div className="pb-6 overflow-auto grow">
+        <Navbar
+          setIsInfoModalOpen={setIsInfoModalOpen}
+          setIsStatsModalOpen={setIsStatsModalOpen}
+          setIsSettingsModalOpen={setIsSettingsModalOpen}
+        />
+        <div className="pb-6 overflow-auto flex flex-col">
           <Grid
             guesses={guesses}
             currentGuess={currentGuess}
@@ -228,7 +228,7 @@ function App() {
             currentRowClassName={currentRowClass}
           />
         </div>
-        <div className="grow pt-1">
+        <div className="pt-1">
           <Keyboard
             onChar={onChar}
             onDelete={onDelete}
@@ -237,7 +237,6 @@ function App() {
             isRevealing={isRevealing}
           />
         </div>
-        <div className="flex-none h-10" />
         <InfoModal
           isOpen={isInfoModalOpen}
           handleClose={() => setIsInfoModalOpen(false)}
