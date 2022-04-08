@@ -22,7 +22,11 @@ export const getStatuses = (
   const splitSolution = unicodeSplit(solution)
 
   guesses.forEach((word) => {
-    unicodeSplit(word).forEach((c) => (charObj[c] = 'guessed'))
+    unicodeSplit(word).forEach((c) => {
+      if (charObj[c] !== 'absent') {
+        charObj[c] = 'guessed'
+      }
+    })
 
     if (unicodeSplit(word).every((c) => !splitSolution.includes(c))) {
       unicodeSplit(word).forEach((c) => (charObj[c] = 'absent'))

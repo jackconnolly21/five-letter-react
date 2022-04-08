@@ -13,6 +13,7 @@ export const CompletedRow = ({ guess, isRevealing }: Props) => {
   const guessScore = getGuessScore(guess)
   const resultStatus =
     guessScore === 0 ? 'zero' : guessScore < 4 ? 'medium' : 'high'
+  const guessResultString = guessScore === 6 ? '🎉' : guessScore.toString()
 
   return (
     <div className="flex justify-center mb-1">
@@ -27,9 +28,10 @@ export const CompletedRow = ({ guess, isRevealing }: Props) => {
       ))}
       <Cell
         key={MAX_WORD_LENGTH}
-        value={guessScore.toString()}
+        value={isRevealing ? '' : guessResultString}
         position={MAX_WORD_LENGTH}
         resultStatus={resultStatus}
+        isRevealing={isRevealing}
         isCompleted
       />
     </div>

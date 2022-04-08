@@ -184,7 +184,7 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
-    }, REVEAL_TIME_MS * MAX_WORD_LENGTH)
+    }, REVEAL_TIME_MS * (MAX_WORD_LENGTH + 1))
 
     const winningWord = isWinningWord(currentGuess)
 
@@ -237,6 +237,7 @@ function App() {
             isRevealing={isRevealing}
           />
         </div>
+        <div className="flex-none h-10" />
         <InfoModal
           isOpen={isInfoModalOpen}
           handleClose={() => setIsInfoModalOpen(false)}
@@ -249,8 +250,6 @@ function App() {
           isGameLost={isGameLost}
           isGameWon={isGameWon}
           handleShareToClipboard={() => showSuccessAlert(GAME_COPIED_MESSAGE)}
-          isDarkMode={isDarkMode}
-          isHighContrastMode={isHighContrastMode}
           numberOfGuessesMade={guesses.length}
         />
         <SettingsModal
