@@ -1,4 +1,6 @@
 # TODO
 
+- differentiate result box
+- make share work on phone
 - move scroll bar to grid
 - practice version?
