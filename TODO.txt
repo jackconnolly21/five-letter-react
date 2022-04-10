@@ -1,7 +1,5 @@
 # TODO
 
-- allow changing of letter colors
-- differentiate result box
 - make share work on phone
 - move scroll bar to grid
 - practice version?
