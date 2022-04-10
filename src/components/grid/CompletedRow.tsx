@@ -11,6 +11,9 @@ type Props = {
 export const CompletedRow = ({ guess, isRevealing }: Props) => {
   const splitGuess = unicodeSplit(guess)
   const guessScore = getGuessScore(guess)
+
+  const rowStatus =
+    guessScore === 6 ? 'present' : guessScore === 0 ? 'absent' : 'none'
   const resultStatus =
     guessScore === 0 ? 'zero' : guessScore < 4 ? 'medium' : 'high'
   const guessResultString = guessScore === 6 ? '🎉' : guessScore.toString()
@@ -22,7 +25,7 @@ export const CompletedRow = ({ guess, isRevealing }: Props) => {
           key={i}
           value={letter}
           position={i}
-          status={guessScore === 6 ? 'present' : 'none'}
+          status={rowStatus}
           isRevealing={isRevealing}
           isCompleted
         />

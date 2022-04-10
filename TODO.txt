@@ -1,5 +1,7 @@
 # TODO
 
+- Change all of one letter at same time?
+--- In Redux?
 - make share work on phone
 - move scroll bar to grid
 - practice version?
