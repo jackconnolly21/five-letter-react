@@ -22,22 +22,16 @@ export const shareStatus = (
   let shareSuccess = false
 
   try {
-    const attemptShareVal = attemptShare(shareData)
-    alert(`Attempt share = ${attemptShareVal}`)
-    if (attemptShareVal) {
-      alert('Trying to share')
+    if (attemptShare(shareData)) {
       navigator.share(shareData)
       shareSuccess = true
     }
   } catch (error) {
-    alert('Failed to share')
     shareSuccess = false
   }
 
   if (!shareSuccess) {
-    alert('Trying to copy to clipboard')
     navigator.clipboard.writeText(textToShare)
-    alert('Did copy to clipboard')
     handleShareToClipboard()
   }
 }

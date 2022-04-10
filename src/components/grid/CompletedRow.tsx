@@ -33,6 +33,7 @@ export const CompletedRow = ({ guess, isRevealing }: Props) => {
         resultStatus={resultStatus}
         isRevealing={isRevealing}
         isCompleted
+        isResult
       />
     </div>
   )
