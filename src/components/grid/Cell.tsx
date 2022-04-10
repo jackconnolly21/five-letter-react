@@ -4,7 +4,6 @@ import { REVEAL_TIME_MS } from '../../constants/settings'
 import { useState } from 'react'
 
 type Props = {
-  key?: number
   value?: string
   status?: CellStatus
   resultStatus?: ResultStatus
@@ -12,10 +11,10 @@ type Props = {
   isRevealing?: boolean
   isCompleted?: boolean
   position?: number
+  isInvalid?: boolean
 }
 
 export const Cell = ({
-  key,
   value,
   status,
   resultStatus,
@@ -23,6 +22,7 @@ export const Cell = ({
   isRevealing,
   isCompleted,
   position = 0,
+  isInvalid,
 }: Props) => {
   const isFilled = value && !isCompleted
   const shouldReveal = isRevealing && isCompleted
@@ -55,6 +55,8 @@ export const Cell = ({
   const classes = classnames(
     'w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white',
     {
+      'present shadowed bg-red-500 dark:bg-red-500 text-white border-red-500 dark:border-red-500':
+        resultStatus === 'zero' || isInvalid,
       'present shadowed bg-yellow-500 dark:bg-yellow-500 text-white border-yellow-500 dark:border-yellow-500':
         overrideStatus === 'maybe' || resultStatus === 'medium',
       'present shadowed bg-green-500 dark:bg-green-500 text-white border-green-500 dark:border-green-500':
@@ -63,16 +65,15 @@ export const Cell = ({
         resultStatus === 'correct',
       'absent shadowed bg-slate-400 dark:bg-slate-700 text-white border-slate-400 dark:border-slate-700':
         overrideStatus === 'absent',
-      'present shadowed bg-red-500 dark:bg-red-500 text-white border-red-500 dark:border-red-500':
-        overrideStatus === 'invalid' || resultStatus === 'zero',
-      'border-black dark:border-slate-100': (value && !status) || isResult,
+      'border-black dark:border-slate-100':
+        (value && overrideStatus === 'none') || isResult,
       'cell-fill-animation': isFilled,
       'cell-reveal': shouldReveal,
     }
   )
 
   return (
-    <button onClick={handleClick} key={key}>
+    <button onClick={handleClick}>
       <div className={classes} style={{ animationDelay }}>
         <div className="letter-container" style={{ animationDelay }}>
           {value}

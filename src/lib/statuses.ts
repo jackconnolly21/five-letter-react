@@ -1,7 +1,7 @@
 import { solution, unicodeSplit } from './words'
 
 export type CharStatus = 'absent' | 'present' | 'correct' | 'guessed'
-export type CellStatus = 'none' | 'invalid' | 'absent' | 'maybe' | 'present'
+export type CellStatus = 'none' | 'absent' | 'maybe' | 'present'
 export type ResultStatus = 'zero' | 'medium' | 'high' | 'correct'
 
 export const getGuessScore = (guess: string) => {

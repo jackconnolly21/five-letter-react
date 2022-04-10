@@ -12,13 +12,12 @@ export const CurrentRow = ({ guess, className }: Props) => {
   const emptyCells = Array.from(Array(MAX_WORD_LENGTH - splitGuess.length))
   const classes = `flex justify-center mb-1 ${className}`
 
-  const invalidWord = guess.length === 5 && !isWordInWordList(guess)
-  const status = invalidWord ? 'invalid' : 'none'
+  const isInvalid = guess.length === 5 && !isWordInWordList(guess)
 
   return (
     <div className={classes}>
       {splitGuess.map((letter, i) => (
-        <Cell key={i} value={letter} status={status} />
+        <Cell key={i} value={letter} isInvalid={isInvalid} />
       ))}
       {emptyCells.map((_, i) => (
         <Cell key={i} />
