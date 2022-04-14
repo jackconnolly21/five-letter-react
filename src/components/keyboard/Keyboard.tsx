@@ -1,4 +1,4 @@
-import { getStatuses } from '../../lib/statuses'
+import { CharStatusDict } from '../../lib/statuses'
 import { Key } from './Key'
 import { useEffect } from 'react'
 import { ENTER_TEXT, DELETE_TEXT } from '../../constants/strings'
@@ -8,19 +8,17 @@ type Props = {
   onChar: (value: string) => void
   onDelete: () => void
   onEnter: () => void
-  guesses: string[]
   isRevealing?: boolean
+  letterStatuses: CharStatusDict
 }
 
 export const Keyboard = ({
   onChar,
   onDelete,
   onEnter,
-  guesses,
   isRevealing,
+  letterStatuses,
 }: Props) => {
-  const charStatuses = getStatuses(guesses)
-
   const onClick = (value: string) => {
     if (value === 'ENTER') {
       onEnter()
@@ -58,7 +56,7 @@ export const Keyboard = ({
             value={key}
             key={key}
             onClick={onClick}
-            status={charStatuses[key]}
+            status={letterStatuses[key]}
             isRevealing={isRevealing}
           />
         ))}
@@ -69,7 +67,7 @@ export const Keyboard = ({
             value={key}
             key={key}
             onClick={onClick}
-            status={charStatuses[key]}
+            status={letterStatuses[key]}
             isRevealing={isRevealing}
           />
         ))}
@@ -83,7 +81,7 @@ export const Keyboard = ({
             value={key}
             key={key}
             onClick={onClick}
-            status={charStatuses[key]}
+            status={letterStatuses[key]}
             isRevealing={isRevealing}
           />
         ))}

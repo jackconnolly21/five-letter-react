@@ -1,17 +1,17 @@
-import { CellStatus, ResultStatus } from '../../lib/statuses'
+import { CharStatus, ResultStatus } from '../../lib/statuses'
 import classnames from 'classnames'
 import { REVEAL_TIME_MS } from '../../constants/settings'
-import { useState } from 'react'
 
 type Props = {
   value?: string
-  status?: CellStatus
+  status?: CharStatus
   resultStatus?: ResultStatus
   isResult?: boolean
   isRevealing?: boolean
   isCompleted?: boolean
   position?: number
   isInvalid?: boolean
+  handleStatusChange?: (char: string, status: CharStatus) => void
 }
 
 export const Cell = ({
@@ -23,32 +23,35 @@ export const Cell = ({
   isCompleted,
   position = 0,
   isInvalid,
+  handleStatusChange,
 }: Props) => {
   const isFilled = value && !isCompleted
   const shouldReveal = isRevealing && isCompleted
   const animationDelay = `${position * REVEAL_TIME_MS}ms`
 
-  const [overrideStatus, setOverrideStatus] = useState<CellStatus>(
-    status ?? 'none'
-  )
-
-  const handleClick = () => {
+  const getNextStatus = () => {
     // Only allow changes for completed normal cells
     if (value && !isResult) {
-      switch (overrideStatus) {
-        case 'none':
-          setOverrideStatus('absent')
-          break
+      switch (status) {
+        case 'guessed':
+          return 'absent'
         case 'absent':
-          setOverrideStatus('maybe')
-          break
+          return 'maybe'
         case 'maybe':
-          setOverrideStatus('present')
-          break
+          return 'present'
         case 'present':
-          setOverrideStatus('none')
-          break
+          return 'guessed'
       }
+    }
+
+    // Should never get here
+    throw new Error(`Status was ${status}, should never get here`)
+  }
+
+  const handleClick = () => {
+    if (handleStatusChange !== undefined && value !== undefined) {
+      const nextStatus = getNextStatus()
+      handleStatusChange(value, nextStatus)
     }
   }
 
@@ -58,15 +61,16 @@ export const Cell = ({
       'present shadowed bg-red-500 dark:bg-red-500 text-white border-red-500 dark:border-red-500':
         resultStatus === 'zero' || isInvalid,
       'present shadowed bg-yellow-500 dark:bg-yellow-500 text-white border-yellow-500 dark:border-yellow-500':
-        overrideStatus === 'maybe' || resultStatus === 'medium',
+        status === 'maybe' || resultStatus === 'medium',
       'present shadowed bg-green-500 dark:bg-green-500 text-white border-green-500 dark:border-green-500':
-        overrideStatus === 'present' ||
+        status === 'present' ||
         resultStatus === 'high' ||
         resultStatus === 'correct',
       'absent shadowed bg-slate-400 dark:bg-slate-700 text-white border-slate-400 dark:border-slate-700':
-        overrideStatus === 'absent',
-      'border-black dark:border-slate-100':
-        (value && overrideStatus === 'none') || isResult,
+        status === 'absent',
+      'border-black dark:border-white':
+        (value && (status === 'none' || status === 'guessed')) || isResult,
+      'border-slate-400 dark:border-slate-800': !value && !isResult,
       'cell-fill-animation': isFilled,
       'cell-reveal': shouldReveal,
     }

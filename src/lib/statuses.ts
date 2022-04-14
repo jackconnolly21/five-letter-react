@@ -1,8 +1,9 @@
 import { solution, unicodeSplit } from './words'
 
-export type CharStatus = 'absent' | 'present' | 'correct' | 'guessed'
-export type CellStatus = 'none' | 'absent' | 'maybe' | 'present'
+export type CharStatus = 'none' | 'absent' | 'maybe' | 'present' | 'guessed'
+
 export type ResultStatus = 'zero' | 'medium' | 'high' | 'correct'
+export type CharStatusDict = { [char: string]: CharStatus }
 
 export const getGuessScore = (guess: string) => {
   if (guess === solution) {
@@ -15,23 +16,21 @@ export const getGuessScore = (guess: string) => {
   return Array.from(setGuess).filter((c) => setSolution.has(c)).length
 }
 
-export const getStatuses = (
-  guesses: string[]
-): { [key: string]: CharStatus } => {
-  const charObj: { [key: string]: CharStatus } = {}
-  const splitSolution = unicodeSplit(solution)
+// Responsibility of caller for priority logic
+export const updateLetterStatuses = (
+  letterStatuses: CharStatusDict,
+  letters: string[],
+  newStatus: CharStatus
+) => {
+  const newLetterStatuses = { ...letterStatuses }
+  letters.forEach((c) => (newLetterStatuses[c] = newStatus))
+  return newLetterStatuses
+}
 
-  guesses.forEach((word) => {
-    unicodeSplit(word).forEach((c) => {
-      if (charObj[c] !== 'absent') {
-        charObj[c] = 'guessed'
-      }
-    })
-
-    if (unicodeSplit(word).every((c) => !splitSolution.includes(c))) {
-      unicodeSplit(word).forEach((c) => (charObj[c] = 'absent'))
-    }
-  })
-
-  return charObj
+export const updateLetterStatus = (
+  letterStatuses: CharStatusDict,
+  letter: string,
+  newStatus: CharStatus
+) => {
+  return updateLetterStatuses(letterStatuses, [letter], newStatus)
 }

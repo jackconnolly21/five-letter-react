@@ -1,5 +1,6 @@
+import { CharStatusDict } from './statuses'
+
 const gameStateKey = 'gameState'
-const highContrastKey = 'highContrast'
 
 type StoredGameState = {
   guesses: string[]
@@ -35,15 +36,17 @@ export const loadStatsFromLocalStorage = () => {
   return stats ? (JSON.parse(stats) as GameStats) : null
 }
 
-export const setStoredIsHighContrastMode = (isHighContrast: boolean) => {
-  if (isHighContrast) {
-    localStorage.setItem(highContrastKey, '1')
-  } else {
-    localStorage.removeItem(highContrastKey)
-  }
+const statusStatKey = 'statuses'
+
+export type Statuses = {
+  statuses: CharStatusDict
 }
 
-export const getStoredIsHighContrastMode = () => {
-  const highContrast = localStorage.getItem(highContrastKey)
-  return highContrast === '1'
+export const saveStatusesToLocalStorage = (statuses: Statuses) => {
+  localStorage.setItem(statusStatKey, JSON.stringify(statuses))
+}
+
+export const loadStatusesFromLocalStorage = () => {
+  const statuses = localStorage.getItem(statusStatKey)
+  return statuses ? (JSON.parse(statuses) as Statuses) : null
 }

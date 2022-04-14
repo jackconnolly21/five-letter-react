@@ -1,4 +1,5 @@
 import { MAX_CHALLENGES } from '../../constants/settings'
+import { CharStatus, CharStatusDict } from '../../lib/statuses'
 import { CompletedRow } from './CompletedRow'
 import { CurrentRow } from './CurrentRow'
 import { EmptyRow } from './EmptyRow'
@@ -8,6 +9,8 @@ type Props = {
   currentGuess: string
   isRevealing?: boolean
   currentRowClassName: string
+  letterStatuses: CharStatusDict
+  setLetterStatus: (char: string, newStatus: CharStatus) => void
 }
 
 export const Grid = ({
@@ -15,6 +18,8 @@ export const Grid = ({
   currentGuess,
   isRevealing,
   currentRowClassName,
+  letterStatuses,
+  setLetterStatus,
 }: Props) => {
   const empties =
     guesses.length < MAX_CHALLENGES - 1
@@ -28,10 +33,17 @@ export const Grid = ({
           key={i}
           guess={guess}
           isRevealing={isRevealing && guesses.length - 1 === i}
+          letterStatuses={letterStatuses}
+          setLetterStatus={setLetterStatus}
         />
       ))}
       {guesses.length < MAX_CHALLENGES && (
-        <CurrentRow guess={currentGuess} className={currentRowClassName} />
+        <CurrentRow
+          guess={currentGuess}
+          className={currentRowClassName}
+          letterStatuses={letterStatuses}
+          setLetterStatus={setLetterStatus}
+        />
       )}
       {empties.map((_, i) => (
         <EmptyRow key={i} />

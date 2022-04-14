@@ -23,13 +23,14 @@ import {
   isWinningWord,
   solution,
   unicodeLength,
+  unicodeSplit,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
   loadGameStateFromLocalStorage,
+  loadStatusesFromLocalStorage,
   saveGameStateToLocalStorage,
-  setStoredIsHighContrastMode,
-  getStoredIsHighContrastMode,
+  saveStatusesToLocalStorage,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 
@@ -37,6 +38,13 @@ import './App.css'
 import { AlertContainer } from './components/alerts/AlertContainer'
 import { useAlert } from './context/AlertContext'
 import { Navbar } from './components/navbar/Navbar'
+import {
+  CharStatus,
+  CharStatusDict,
+  getGuessScore,
+  updateLetterStatus,
+  updateLetterStatuses,
+} from './lib/statuses'
 
 function App() {
   const prefersDarkMode = window.matchMedia(
@@ -59,9 +67,16 @@ function App() {
       ? true
       : false
   )
-  const [isHighContrastMode, setIsHighContrastMode] = useState(
-    getStoredIsHighContrastMode()
-  )
+  const [letterStatuses, setLetterStatuses] = useState<CharStatusDict>(() => {
+    const loaded = loadStatusesFromLocalStorage()
+    const loadedGame = loadGameStateFromLocalStorage()
+    if (loadedGame?.solution !== solution || loaded?.statuses === undefined) {
+      return {}
+    }
+
+    return loaded.statuses
+  })
+
   const [isRevealing, setIsRevealing] = useState(false)
   const [guesses, setGuesses] = useState<string[]>(() => {
     const loaded = loadGameStateFromLocalStorage()
@@ -99,22 +114,11 @@ function App() {
     } else {
       document.documentElement.classList.remove('dark')
     }
-
-    if (isHighContrastMode) {
-      document.documentElement.classList.add('high-contrast')
-    } else {
-      document.documentElement.classList.remove('high-contrast')
-    }
-  }, [isDarkMode, isHighContrastMode])
+  }, [isDarkMode])
 
   const handleDarkMode = (isDark: boolean) => {
     setIsDarkMode(isDark)
     localStorage.setItem('theme', isDark ? 'dark' : 'light')
-  }
-
-  const handleHighContrastMode = (isHighContrast: boolean) => {
-    setIsHighContrastMode(isHighContrast)
-    setStoredIsHighContrastMode(isHighContrast)
   }
 
   const clearCurrentRowClass = () => {
@@ -124,6 +128,10 @@ function App() {
   useEffect(() => {
     saveGameStateToLocalStorage({ guesses, solution })
   }, [guesses])
+
+  useEffect(() => {
+    saveStatusesToLocalStorage({ statuses: letterStatuses })
+  }, [letterStatuses])
 
   useEffect(() => {
     if (isGameWon) {
@@ -179,6 +187,27 @@ function App() {
       })
     }
 
+    // Update status of guess
+    // 1. Absent if 0 letters in common
+    // 2. Present if winning word
+    // 3. Guessed if status was None
+    // 4. Otherwise don't change
+    const letters = unicodeSplit(currentGuess)
+    if (getGuessScore(currentGuess) === 0) {
+      setLetterStatuses(updateLetterStatuses(letterStatuses, letters, 'absent'))
+    } else if (isWinningWord(currentGuess)) {
+      setLetterStatuses(
+        updateLetterStatuses(letterStatuses, letters, 'present')
+      )
+    } else {
+      const lettersToUpdate = letters.filter(
+        (c) => !letterStatuses[c] || letterStatuses[c] === 'none'
+      )
+      setLetterStatuses(
+        updateLetterStatuses(letterStatuses, lettersToUpdate, 'guessed')
+      )
+    }
+
     setIsRevealing(true)
     // turn this back off after all
     // chars have been revealed
@@ -226,6 +255,12 @@ function App() {
             currentGuess={currentGuess}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
+            letterStatuses={letterStatuses}
+            setLetterStatus={(char: string, newStatus: CharStatus) =>
+              setLetterStatuses(
+                updateLetterStatus(letterStatuses, char, newStatus)
+              )
+            }
           />
         </div>
         <div className="pt-1">
@@ -233,7 +268,7 @@ function App() {
             onChar={onChar}
             onDelete={onDelete}
             onEnter={onEnter}
-            guesses={guesses}
+            letterStatuses={letterStatuses}
             isRevealing={isRevealing}
           />
         </div>
@@ -256,8 +291,6 @@ function App() {
           handleClose={() => setIsSettingsModalOpen(false)}
           isDarkMode={isDarkMode}
           handleDarkMode={handleDarkMode}
-          isHighContrastMode={isHighContrastMode}
-          handleHighContrastMode={handleHighContrastMode}
         />
         <AlertContainer />
       </div>
