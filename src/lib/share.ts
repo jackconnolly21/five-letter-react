@@ -11,7 +11,6 @@ const device = parser.getDevice()
 export const shareStatus = (
   guesses: string[],
   lost: boolean,
-  alwaysShareToClipboard: boolean,
   handleShareToClipboard: () => void
 ) => {
   const textHeader = `${GAME_TITLE} #${solutionIndex}`
@@ -26,19 +25,17 @@ export const shareStatus = (
 
   let shareSuccess = false
 
-  if (!alwaysShareToClipboard) {
-    try {
-      if (attemptShare(shareData)) {
-        navigator.share(shareData)
-        shareSuccess = true
-      }
-    } catch (error) {
-      shareSuccess = false
+  try {
+    if (attemptShare(shareData)) {
+      navigator.share(shareData)
+      shareSuccess = true
     }
+  } catch (error) {
+    shareSuccess = false
   }
 
   if (!shareSuccess) {
-    navigator.clipboard.writeText(textToShare)
+    copyToClipboard(textToShare)
     handleShareToClipboard()
   }
 }
@@ -52,6 +49,30 @@ const attemptShare = (shareData: object) => {
     navigator.canShare(shareData) &&
     navigator.share
   )
+}
+
+const copyToClipboard = (textToCopy: string) => {
+  // navigator clipboard api needs a secure context (https)
+  if (navigator.clipboard && window.isSecureContext) {
+    // navigator clipboard api method
+    return navigator.clipboard.writeText(textToCopy)
+  } else {
+    // text area method
+    let textArea = document.createElement('textarea')
+    textArea.value = textToCopy
+    // make the textarea out of viewport
+    textArea.style.position = 'fixed'
+    textArea.style.left = '-999999px'
+    textArea.style.top = '-999999px'
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    const result = document.execCommand('copy')
+    if (result === false) {
+      console.error('Failed to copy text.')
+    }
+    textArea.remove()
+  }
 }
 
 const numberToEmoji: { [num: number]: string } = {
