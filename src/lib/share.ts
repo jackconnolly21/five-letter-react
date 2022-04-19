@@ -2,6 +2,7 @@ import { solutionIndex } from './words'
 import { GAME_TITLE } from '../constants/strings'
 import { MAX_CHALLENGES } from '../constants/settings'
 import { UAParser } from 'ua-parser-js'
+import { getGuessScore } from './statuses'
 
 const webShareApiDeviceTypes: string[] = ['mobile', 'smarttv', 'wearable']
 const parser = new UAParser()
@@ -14,12 +15,9 @@ export const shareStatus = (
   handleShareToClipboard: () => void
 ) => {
   const textHeader = `${GAME_TITLE} #${solutionIndex}`
-  const textBody = lost
-    ? `Lost in ${MAX_CHALLENGES} guesses.`
-    : `I got it in ${numberToEmoji[guesses.length]} ${
-        guesses.length === 1 ? 'guess' : 'guesses'
-      }!`
-  const textToShare = `${textHeader}\n${textBody}`
+  const scoreHeader = `${lost ? 'X' : guesses.length}/${MAX_CHALLENGES}`
+  const textBody = getGuessEmojis(guesses).join('')
+  const textToShare = `${textHeader} ${scoreHeader}\n${textBody}`
 
   const shareData = { text: textToShare }
 
@@ -75,20 +73,18 @@ const copyToClipboard = (textToCopy: string) => {
   }
 }
 
-const numberToEmoji: { [num: number]: string } = {
-  1: '1️⃣',
-  2: '2️⃣',
-  3: '3️⃣',
-  4: '4️⃣',
-  5: '5️⃣',
-  6: '6️⃣',
-  7: '7️⃣',
-  8: '8️⃣',
-  9: '9️⃣',
-  10: '1️⃣0️⃣',
-  11: '1️⃣1️⃣',
-  12: '1️⃣2️⃣',
-  13: '1️⃣3️⃣',
-  14: '1️⃣4️⃣',
-  15: '1️⃣5️⃣',
+const getGuessEmojis = (guesses: string[]) => {
+  return guesses.map((guess) => {
+    const score = getGuessScore(guess)
+    if (score === 0) {
+      return '🟥'
+    }
+    if (score <= 3) {
+      return '🟨'
+    }
+    if (score <= 5) {
+      return '🟩'
+    }
+    return '🎉'
+  })
 }

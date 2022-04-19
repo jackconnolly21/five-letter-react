@@ -1,7 +1,3 @@
 # TODO
 
--- Update share text
--- 2 rows of 8 (up to 15 guesses), emojis for red,yellow,green,party
---- Consider other layouts (3x5 just looks like wordle)
-- usage tracking
 - practice version?
