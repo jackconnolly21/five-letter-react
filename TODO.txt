@@ -1,3 +1,7 @@
 # TODO
 
+- modal pops up when you get 5 letters
+-- Maybe some additional info?
+- http share not working
+- redirect http to https
 - practice version?

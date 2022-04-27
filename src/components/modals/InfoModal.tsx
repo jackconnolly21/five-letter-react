@@ -19,15 +19,16 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
-        <Cell key={0} value="W" />
-        <Cell key={1} value="E" />
-        <Cell key={2} value="A" />
-        <Cell key={3} value="R" />
+        <Cell key={0} value="S" />
+        <Cell key={1} value="U" />
+        <Cell key={2} value="N" />
+        <Cell key={3} value="N" />
         <Cell key={4} value="Y" />
         <Cell key={5} value="1" resultStatus="medium" isResult />
       </div>
       <p className={textClasses}>
-        There is one letter in common with the word.
+        There is one letter in common with the word. Even if that letter is N,
+        that only counts as one letter towards the score.
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
