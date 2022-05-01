@@ -8,7 +8,8 @@ type Props = {
 
 export const Histogram = ({ gameStats, numberOfGuessesMade }: Props) => {
   const winDistribution = gameStats.winDistribution
-  const maxValue = Math.max(...winDistribution)
+  var maxValue = Math.max(...winDistribution)
+  maxValue = maxValue === 0 ? 1 : maxValue // Avoid divide by zero
 
   return (
     <div className="columns-1 justify-left m-2 text-sm dark:text-white">

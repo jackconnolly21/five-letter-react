@@ -10,6 +10,7 @@ import {
   GUESS_DISTRIBUTION_TEXT,
   NEW_WORD_TEXT,
   SHARE_TEXT,
+  AVERAGE_TEXT,
 } from '../../constants/strings'
 
 type Props = {
@@ -44,6 +45,14 @@ export const StatsModal = ({
       </BaseModal>
     )
   }
+
+  const totalGuesses = gameStats.winDistribution
+    .map((value, i) => value * (i + 1))
+    .reduce((total, num) => total + num, 0)
+  const totalWins = gameStats.totalGames - gameStats.gamesFailed
+  const avgGuessesText =
+    totalGuesses > 0 ? ` (${AVERAGE_TEXT} ${totalGuesses / totalWins})` : ''
+
   return (
     <BaseModal
       title={STATISTICS_TITLE}
@@ -53,6 +62,7 @@ export const StatsModal = ({
       <StatBar gameStats={gameStats} />
       <h4 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
         {GUESS_DISTRIBUTION_TEXT}
+        {avgGuessesText}
       </h4>
       <Histogram
         gameStats={gameStats}
