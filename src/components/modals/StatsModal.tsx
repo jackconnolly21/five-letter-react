@@ -51,7 +51,9 @@ export const StatsModal = ({
     .reduce((total, num) => total + num, 0)
   const totalWins = gameStats.totalGames - gameStats.gamesFailed
   const avgGuessesText =
-    totalGuesses > 0 ? ` (${AVERAGE_TEXT} ${totalGuesses / totalWins})` : ''
+    totalGuesses > 0
+      ? ` (${AVERAGE_TEXT} ${(totalGuesses / totalWins).toFixed(1)})`
+      : ''
 
   return (
     <BaseModal
