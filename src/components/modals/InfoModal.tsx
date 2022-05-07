@@ -1,4 +1,12 @@
+import { useState } from 'react'
 import { MAX_CHALLENGES } from '../../constants/settings'
+import {
+  CharStatus,
+  CharStatusDict,
+  updateLetterStatus,
+  updateLetterStatuses,
+} from '../../lib/statuses'
+import { unicodeSplit } from '../../lib/words'
 import { Cell } from '../grid/Cell'
 import { BaseModal } from './BaseModal'
 
@@ -9,41 +17,64 @@ type Props = {
 
 export const InfoModal = ({ isOpen, handleClose }: Props) => {
   const textClasses = 'text-sm text-gray-500 dark:text-gray-300'
+  const [statuses, setStatuses] = useState<CharStatusDict>(() => {
+    const lettersInExamples = ['S', 'U', 'N', 'Y', 'V', 'A', 'G', 'E']
+    return updateLetterStatuses({}, lettersInExamples, 'guessed')
+  })
+
+  const handleStatusChange = (char: string, status: CharStatus) => {
+    setStatuses(updateLetterStatus(statuses, char, status))
+  }
+
+  const getExampleCell = (char: string, i: number) => {
+    return (
+      <Cell
+        key={i}
+        value={char}
+        status={statuses[char]}
+        handleStatusChange={handleStatusChange}
+      />
+    )
+  }
 
   return (
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
       <p className={textClasses}>
         Guess the word in {MAX_CHALLENGES} tries. After each guess, you will be
-        told only the number of letters in common with the mystery word. Click
-        on letters to change their color and take notes!
+        told only the number of letters in common with the mystery word. Try
+        clicking on letters to change their color and take notes!
       </p>
 
-      <div className="flex justify-center mb-1 mt-4">
-        <Cell key={0} value="S" />
-        <Cell key={1} value="U" />
-        <Cell key={2} value="N" />
-        <Cell key={3} value="N" />
-        <Cell key={4} value="Y" />
+      <p className={`${textClasses} pt-4`}>
+        For example, if the word is "VEGAN":
+      </p>
+
+      <div className="flex justify-center mb-2 mt-2">
+        {getExampleCell('S', 0)}
+        {getExampleCell('U', 1)}
+        {getExampleCell('N', 2)}
+        {getExampleCell('N', 3)}
+        {getExampleCell('Y', 4)}
         <Cell key={5} value="1" resultStatus="medium" isResult />
       </div>
       <p className={textClasses}>
-        There is one letter in common with the word. Even if that letter is N,
-        that only counts as one letter towards the score.
+        Only the 'N' is in the mystery word. It only counts as one letter
+        towards the score, regardless of how many 'N's are in your guess.
       </p>
 
-      <div className="flex justify-center mb-1 mt-4">
-        <Cell key={0} value="V" />
-        <Cell key={1} value="A" />
-        <Cell key={2} value="G" />
-        <Cell key={3} value="U" />
-        <Cell key={4} value="E" />
+      <div className="flex justify-center mb-2 mt-4">
+        {getExampleCell('V', 0)}
+        {getExampleCell('A', 1)}
+        {getExampleCell('G', 2)}
+        {getExampleCell('U', 3)}
+        {getExampleCell('E', 4)}
         <Cell key={5} value="4" resultStatus="high" isResult />
       </div>
       <p className={textClasses}>
-        There are 4 letters in common with the word.
+        There are 4 letters in common with the word - every letter except 'U'.
       </p>
 
-      <h3 className="text-lg text-gray-500 dark:text-gray-300 pt-8 pb-4">
+      <h3 className="text-lg text-gray-500 dark:text-gray-300 pt-6">
         Some tips:
       </h3>
 
