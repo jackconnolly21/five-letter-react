@@ -6,7 +6,6 @@ import {
   updateLetterStatus,
   updateLetterStatuses,
 } from '../../lib/statuses'
-import { unicodeSplit } from '../../lib/words'
 import { Cell } from '../grid/Cell'
 import { BaseModal } from './BaseModal'
 
