@@ -41,6 +41,7 @@ import { Navbar } from './components/navbar/Navbar'
 import {
   CharStatus,
   CharStatusDict,
+  clearLetterStatuses,
   getGuessScore,
   updateLetterStatus,
   updateLetterStatuses,
@@ -291,6 +292,11 @@ function App() {
           handleClose={() => setIsSettingsModalOpen(false)}
           isDarkMode={isDarkMode}
           handleDarkMode={handleDarkMode}
+          handleClearNotes={() => {
+            setLetterStatuses(clearLetterStatuses(guesses))
+            setIsSettingsModalOpen(false)
+            showSuccessAlert('Cleared Notes')
+          }}
         />
         <AlertContainer />
       </div>

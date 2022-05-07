@@ -34,3 +34,29 @@ export const updateLetterStatus = (
 ) => {
   return updateLetterStatuses(letterStatuses, [letter], newStatus)
 }
+
+export const clearLetterStatuses = (guesses: string[]) => {
+  const zeroLetters = guesses.reduce((acc, guess) => {
+    if (getGuessScore(guess) === 0) {
+      unicodeSplit(guess).forEach((c) => acc.add(c))
+    }
+    return acc
+  }, new Set<string>())
+
+  const guessedLetters = guesses.reduce((acc, guess) => {
+    unicodeSplit(guess).forEach((c) => acc.add(c))
+    return acc
+  }, new Set<string>())
+
+  const guessedStatuses = updateLetterStatuses(
+    {}, // Empty dictionary
+    Array.from(guessedLetters),
+    'guessed'
+  )
+
+  return updateLetterStatuses(
+    guessedStatuses,
+    Array.from(zeroLetters),
+    'absent'
+  )
+}
