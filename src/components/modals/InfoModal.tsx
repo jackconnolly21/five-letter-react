@@ -89,6 +89,10 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
           as using letters you know aren't in the word.
         </li>
       </ul>
+
+      <div className="text-sm text-gray-500 dark:text-gray-300 mt-4">
+        Created by Jack Connolly
+      </div>
     </BaseModal>
   )
 }
