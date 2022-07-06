@@ -10,6 +10,7 @@ import {
   NOT_ENOUGH_LETTERS_MESSAGE,
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
+  CLEAR_NOTES_TEXT,
 } from './constants/strings'
 import {
   MAX_WORD_LENGTH,
@@ -295,7 +296,7 @@ function App() {
           handleClearNotes={() => {
             setLetterStatuses(clearLetterStatuses(guesses))
             setIsSettingsModalOpen(false)
-            showSuccessAlert('Cleared Notes')
+            showSuccessAlert(CLEAR_NOTES_TEXT)
           }}
         />
         <AlertContainer />
