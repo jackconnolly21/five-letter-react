@@ -8,3 +8,4 @@
 - better name
 - different logo
 - suggestions/feedback
+- clicking too fast
