@@ -40,8 +40,14 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
     <BaseModal title="How to play" isOpen={isOpen} handleClose={handleClose}>
       <p className={textClasses}>
         Guess the word in {MAX_CHALLENGES} tries. After each guess, you will be
-        told only the number of letters in common with the mystery word. Try
-        clicking on letters to change their color and take notes!
+        told only the number of letters in common with the mystery word.{' '}
+        <i>Try clicking on letters to change their color and take notes!</i>
+      </p>
+
+      <p className={`${textClasses} pt-4`}>
+        Click once to turn a letter grey if you know it's not in the word. Click
+        again for a letter you're uncertain about to become yellow. And click a
+        third time to make letters you're sure about green!
       </p>
 
       <p className={`${textClasses} pt-4`}>

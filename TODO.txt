@@ -5,7 +5,5 @@
 - http share not working
 - redirect http to https
 - practice version?
-- better name
-- different logo
 - suggestions/feedback
 - clicking too fast
