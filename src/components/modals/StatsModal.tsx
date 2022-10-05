@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import Countdown from 'react-countdown'
 import { StatBar } from '../stats/StatBar'
 import { Histogram } from '../stats/Histogram'
 import { GameStats } from '../../lib/localStorage'
 import { shareStatus } from '../../lib/share'
-import { tomorrow } from '../../lib/words'
+import { getPastSolutions, tomorrow } from '../../lib/words'
 import { BaseModal } from './BaseModal'
 import {
   STATISTICS_TITLE,
@@ -11,6 +12,8 @@ import {
   NEW_WORD_TEXT,
   SHARE_TEXT,
   AVERAGE_TEXT,
+  SHOW_PAST_WORDS_TEXT,
+  HIDE_PAST_WORDS_TEXT,
 } from '../../constants/strings'
 
 type Props = {
@@ -34,6 +37,8 @@ export const StatsModal = ({
   handleShareToClipboard,
   numberOfGuessesMade,
 }: Props) => {
+  const [showPastWords, setShowPastWords] = useState(false)
+
   if (gameStats.totalGames <= 0) {
     return (
       <BaseModal
@@ -54,6 +59,8 @@ export const StatsModal = ({
     totalGuesses > 0
       ? ` (${AVERAGE_TEXT} ${(totalGuesses / totalWins).toFixed(1)})`
       : ''
+
+  const pastWords = getPastSolutions(10)
 
   return (
     <BaseModal
@@ -91,6 +98,24 @@ export const StatsModal = ({
           >
             {SHARE_TEXT}
           </button>
+        </div>
+      )}
+      <div className="mt-2 w-full">
+        <button
+          type="button"
+          className="mt-2 text-base font-medium dark:text-white sm:text-sm"
+          onClick={() => {
+            setShowPastWords(!showPastWords)
+          }}
+        >
+          {showPastWords ? HIDE_PAST_WORDS_TEXT : SHOW_PAST_WORDS_TEXT}
+        </button>
+      </div>
+      {showPastWords && (
+        <div className="mt-2 text-base dark:text-white font-medium sm:text-sm">
+          {pastWords.map((word) => (
+            <div key={word}>{word}</div>
+          ))}
         </div>
       )}
     </BaseModal>
