@@ -31,7 +31,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         key={i}
         value={char}
         status={statuses[char]}
-        size="12"
+        isSmall
         handleStatusChange={handleStatusChange}
       />
     )

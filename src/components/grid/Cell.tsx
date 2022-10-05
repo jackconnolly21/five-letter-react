@@ -11,7 +11,7 @@ type Props = {
   isCompleted?: boolean
   position?: number
   isInvalid?: boolean
-  size?: '12' | '14'
+  isSmall?: boolean
   handleStatusChange?: (char: string, status: CharStatus) => void
 }
 
@@ -24,7 +24,7 @@ export const Cell = ({
   isCompleted,
   position = 0,
   isInvalid,
-  size = '14',
+  isSmall = false,
   handleStatusChange,
 }: Props) => {
   const isFilled = value && !isCompleted
@@ -58,8 +58,9 @@ export const Cell = ({
   }
 
   const classes = classnames(
-    `w-${size} h-${size} border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white`,
+    'w-14 h-14 border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white',
     {
+      'w-12 h-12': isSmall,
       'present shadowed bg-red-500 dark:bg-red-500 text-white border-red-500 dark:border-red-500':
         resultStatus === 'zero' || isInvalid,
       'present shadowed bg-yellow-500 dark:bg-yellow-500 text-white border-yellow-500 dark:border-yellow-500':
