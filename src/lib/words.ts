@@ -40,15 +40,25 @@ const MS_IN_DAY = 86400000
 const getOrderIndex = (ms: number) => Math.floor((ms - EPOCH_MS) / MS_IN_DAY)
 
 export const getWordOfDay = () => {
-  const now = Date.now()
-  const orderIndex = getOrderIndex(now)
-  const nextday = (orderIndex + 1) * MS_IN_DAY + EPOCH_MS
-  const mysteryIndex = MYSTERY_ORDER[orderIndex]
+  const epoch = new Date(2022, 3, 1)
+  const start = new Date(epoch)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  let index = 0
+  while (start < today) {
+    index++
+    start.setDate(start.getDate() + 1)
+  }
+
+  const nextDay = new Date(today)
+  nextDay.setDate(today.getDate() + 1)
+
+  const mysteryIndex = MYSTERY_ORDER[index]
 
   return {
     solution: localeAwareUpperCase(WORDS[mysteryIndex % WORDS.length]),
-    solutionIndex: orderIndex,
-    tomorrow: nextday,
+    solutionIndex: index,
+    tomorrow: nextDay.valueOf(),
   }
 }
 
