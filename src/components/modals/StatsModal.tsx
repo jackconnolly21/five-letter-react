@@ -118,6 +118,15 @@ export const StatsModal = ({
           ))}
         </div>
       )}
+
+      <a
+        className="mt-2 text-base font-medium dark:text-white sm:text-sm no-underline"
+        href="https://www.buymeacoffee.com/jackconnolly"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Buy Me A Coffee ☕
+      </a>
     </BaseModal>
   )
 }
