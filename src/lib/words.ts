@@ -11,7 +11,7 @@ export const isWordInWordList = (word: string) => {
 }
 
 export const isWinningWord = (word: string) => {
-  return solution === word
+  return solution === word + '4'
 }
 
 export const unicodeSplit = (word: string) => {
