@@ -3,6 +3,7 @@ import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
 import { InfoModal } from './components/modals/InfoModal'
 import { StatsModal } from './components/modals/StatsModal'
+import { HistoryModal } from './components/modals/HistoryModal'
 import { SettingsModal } from './components/modals/SettingsModal'
 import {
   WIN_MESSAGES,
@@ -32,6 +33,7 @@ import {
   loadStatusesFromLocalStorage,
   saveGameStateToLocalStorage,
   saveStatusesToLocalStorage,
+  saveGameHistoryEntry,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 
@@ -58,6 +60,7 @@ function App() {
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
@@ -228,11 +231,29 @@ function App() {
       setCurrentGuess('')
 
       if (winningWord) {
+        const today = new Date()
+        const dateStr = `${today.getFullYear()}-${String(
+          today.getMonth() + 1
+        ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+        saveGameHistoryEntry({
+          date: dateStr,
+          guesses: guesses.length + 1,
+          won: true,
+        })
         setStats(addStatsForCompletedGame(stats, guesses.length))
         return setIsGameWon(true)
       }
 
       if (guesses.length === MAX_CHALLENGES - 1) {
+        const today = new Date()
+        const dateStr = `${today.getFullYear()}-${String(
+          today.getMonth() + 1
+        ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+        saveGameHistoryEntry({
+          date: dateStr,
+          guesses: guesses.length + 1,
+          won: false,
+        })
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
         showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
@@ -248,6 +269,7 @@ function App() {
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow h-4/5">
         <Navbar
           setIsInfoModalOpen={setIsInfoModalOpen}
+          setIsHistoryModalOpen={setIsHistoryModalOpen}
           setIsStatsModalOpen={setIsStatsModalOpen}
           setIsSettingsModalOpen={setIsSettingsModalOpen}
         />
@@ -277,6 +299,10 @@ function App() {
         <InfoModal
           isOpen={isInfoModalOpen}
           handleClose={() => setIsInfoModalOpen(false)}
+        />
+        <HistoryModal
+          isOpen={isHistoryModalOpen}
+          handleClose={() => setIsHistoryModalOpen(false)}
         />
         <StatsModal
           isOpen={isStatsModalOpen}

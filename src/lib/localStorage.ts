@@ -50,3 +50,27 @@ export const loadStatusesFromLocalStorage = () => {
   const statuses = localStorage.getItem(statusStatKey)
   return statuses ? (JSON.parse(statuses) as Statuses) : null
 }
+
+const gameHistoryKey = 'gameHistory'
+
+export type GameHistoryEntry = {
+  date: string
+  guesses: number
+  won: boolean
+}
+
+export const saveGameHistoryEntry = (entry: GameHistoryEntry) => {
+  const history = loadGameHistory()
+  const idx = history.findIndex((h) => h.date === entry.date)
+  if (idx >= 0) {
+    history[idx] = entry
+  } else {
+    history.push(entry)
+  }
+  localStorage.setItem(gameHistoryKey, JSON.stringify(history))
+}
+
+export const loadGameHistory = (): GameHistoryEntry[] => {
+  const data = localStorage.getItem(gameHistoryKey)
+  return data ? (JSON.parse(data) as GameHistoryEntry[]) : []
+}
