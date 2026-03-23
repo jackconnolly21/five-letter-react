@@ -1,19 +1,70 @@
 import { CharStatusDict } from './statuses'
 
-const gameStateKey = 'gameState'
-
-type StoredGameState = {
+export type StoredGameState = {
   guesses: string[]
-  solution: string
 }
 
-export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
-  localStorage.setItem(gameStateKey, JSON.stringify(gameState))
+const allGameStatesKey = 'allGameStates'
+
+const loadAllGameStates = (): Record<string, StoredGameState> => {
+  const raw = localStorage.getItem(allGameStatesKey)
+  return raw ? (JSON.parse(raw) as Record<string, StoredGameState>) : {}
 }
 
-export const loadGameStateFromLocalStorage = () => {
-  const state = localStorage.getItem(gameStateKey)
-  return state ? (JSON.parse(state) as StoredGameState) : null
+export const saveGameStateToLocalStorage = (
+  dateString: string,
+  gameState: StoredGameState
+) => {
+  const all = loadAllGameStates()
+  all[dateString] = gameState
+  localStorage.setItem(allGameStatesKey, JSON.stringify(all))
+}
+
+export const loadGameStateFromLocalStorage = (
+  dateString: string
+): StoredGameState | null => {
+  return loadAllGameStates()[dateString] ?? null
+}
+
+// Migrate old storage formats into the single allGameStates dict
+export const migrateGameState = (todayString: string) => {
+  const all = loadAllGameStates()
+  let dirty = false
+
+  // Migrate old flat 'gameState' key
+  const oldFlat = localStorage.getItem('gameState')
+  if (oldFlat) {
+    try {
+      const parsed = JSON.parse(oldFlat) as { guesses: string[]; solution?: string }
+      if (parsed.guesses && !all[todayString]) {
+        all[todayString] = { guesses: parsed.guesses }
+        dirty = true
+      }
+    } catch { /* ignore */ }
+    localStorage.removeItem('gameState')
+  }
+
+  // Migrate any per-date 'gameState_YYYY-MM-DD' keys
+  const keysToRemove: string[] = []
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+    if (key?.startsWith('gameState_')) {
+      const dateStr = key.slice('gameState_'.length)
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key)!) as StoredGameState
+        if (parsed.guesses && !all[dateStr]) {
+          all[dateStr] = { guesses: parsed.guesses }
+          dirty = true
+        }
+      } catch { /* ignore */ }
+      keysToRemove.push(key)
+    }
+  }
+  keysToRemove.forEach((k) => localStorage.removeItem(k))
+
+  if (dirty) {
+    localStorage.setItem(allGameStatesKey, JSON.stringify(all))
+  }
 }
 
 const gameStatKey = 'gameStats'

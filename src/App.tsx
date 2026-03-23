@@ -24,6 +24,8 @@ import {
   isWordInWordList,
   isWinningWord,
   solution,
+  getPastSolution,
+  getDateString,
   unicodeLength,
   unicodeSplit,
 } from './lib/words'
@@ -34,6 +36,7 @@ import {
   saveGameStateToLocalStorage,
   saveStatusesToLocalStorage,
   saveGameHistoryEntry,
+  migrateGameState,
 } from './lib/localStorage'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
 
@@ -49,6 +52,12 @@ import {
   updateLetterStatus,
   updateLetterStatuses,
 } from './lib/statuses'
+
+const getToday = () => {
+  const d = new Date()
+  d.setHours(0, 0, 0, 0)
+  return d
+}
 
 function App() {
   const prefersDarkMode = window.matchMedia(
@@ -72,20 +81,30 @@ function App() {
       ? true
       : false
   )
+
+  const today = getToday()
+  const todayString = getDateString(today)
+
+  // Run migration from old flat gameState key on first load
+  migrateGameState(todayString)
+
+  const [selectedDate, setSelectedDate] = useState<Date>(today)
+  const currentSolution = getPastSolution(selectedDate)
+  const dateString = getDateString(selectedDate)
+  const isPlayingPastGame = dateString !== todayString
+
   const [letterStatuses, setLetterStatuses] = useState<CharStatusDict>(() => {
     const loaded = loadStatusesFromLocalStorage()
-    const loadedGame = loadGameStateFromLocalStorage()
-    if (loadedGame?.solution !== solution || loaded?.statuses === undefined) {
+    if (loaded?.statuses === undefined) {
       return {}
     }
-
     return loaded.statuses
   })
 
   const [isRevealing, setIsRevealing] = useState(false)
   const [guesses, setGuesses] = useState<string[]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
+    const loaded = loadGameStateFromLocalStorage(todayString)
+    if (!loaded) {
       return []
     }
     const gameWasWon = loaded.guesses.includes(solution)
@@ -104,13 +123,13 @@ function App() {
   const [stats, setStats] = useState(() => loadStats())
 
   useEffect(() => {
-    // if no game state on load,
-    // show the user the how-to info modal
-    if (!loadGameStateFromLocalStorage()) {
+    // if no game state on load, show the how-to info modal
+    if (!loadGameStateFromLocalStorage(todayString)) {
       setTimeout(() => {
         setIsInfoModalOpen(true)
       }, WELCOME_INFO_MODAL_MS)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -131,8 +150,8 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
-  }, [guesses])
+    saveGameStateToLocalStorage(dateString, { guesses })
+  }, [guesses, dateString])
 
   useEffect(() => {
     saveStatusesToLocalStorage({ statuses: letterStatuses })
@@ -156,6 +175,40 @@ function App() {
       }, GAME_LOST_INFO_DELAY)
     }
   }, [isGameWon, isGameLost, showSuccessAlert])
+
+  const handleSelectDate = (date: Date) => {
+    // Save current game state before switching
+    saveGameStateToLocalStorage(dateString, { guesses })
+
+    const newDateString = getDateString(date)
+    const newSolution = getPastSolution(date)
+    const loaded = loadGameStateFromLocalStorage(newDateString)
+    const newGuesses = loaded?.guesses ?? []
+
+    const gameWasWon = newGuesses.includes(newSolution)
+    const gameWasLost = newGuesses.length === MAX_CHALLENGES && !gameWasWon
+
+    let newStatuses = clearLetterStatuses(newGuesses, newSolution)
+    if (gameWasWon) {
+      newStatuses = updateLetterStatuses(
+        newStatuses,
+        unicodeSplit(newSolution),
+        'present'
+      )
+    }
+
+    setSelectedDate(date)
+    setGuesses(newGuesses)
+    setCurrentGuess('')
+    setLetterStatuses(newStatuses)
+    setIsGameWon(gameWasWon)
+    setIsGameLost(gameWasLost)
+    setIsHistoryModalOpen(false)
+  }
+
+  const handleBackToToday = () => {
+    handleSelectDate(today)
+  }
 
   const onChar = (value: string) => {
     if (
@@ -198,9 +251,9 @@ function App() {
     // 3. Guessed if status was None
     // 4. Otherwise don't change
     const letters = unicodeSplit(currentGuess)
-    if (getGuessScore(currentGuess) === 0) {
+    if (getGuessScore(currentGuess, currentSolution) === 0) {
       setLetterStatuses(updateLetterStatuses(letterStatuses, letters, 'absent'))
-    } else if (isWinningWord(currentGuess)) {
+    } else if (isWinningWord(currentGuess, currentSolution)) {
       setLetterStatuses(
         updateLetterStatuses(letterStatuses, letters, 'present')
       )
@@ -214,13 +267,12 @@ function App() {
     }
 
     setIsRevealing(true)
-    // turn this back off after all
-    // chars have been revealed
+    // turn this back off after all chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
     }, REVEAL_TIME_MS * (MAX_WORD_LENGTH + 1))
 
-    const winningWord = isWinningWord(currentGuess)
+    const winningWord = isWinningWord(currentGuess, currentSolution)
 
     if (
       unicodeLength(currentGuess) === MAX_WORD_LENGTH &&
@@ -231,12 +283,8 @@ function App() {
       setCurrentGuess('')
 
       if (winningWord) {
-        const today = new Date()
-        const dateStr = `${today.getFullYear()}-${String(
-          today.getMonth() + 1
-        ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
         saveGameHistoryEntry({
-          date: dateStr,
+          date: dateString,
           guesses: guesses.length + 1,
           won: true,
         })
@@ -245,18 +293,14 @@ function App() {
       }
 
       if (guesses.length === MAX_CHALLENGES - 1) {
-        const today = new Date()
-        const dateStr = `${today.getFullYear()}-${String(
-          today.getMonth() + 1
-        ).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
         saveGameHistoryEntry({
-          date: dateStr,
+          date: dateString,
           guesses: guesses.length + 1,
           won: false,
         })
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsGameLost(true)
-        showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
+        showErrorAlert(CORRECT_WORD_MESSAGE(currentSolution), {
           persist: true,
           delayMs: REVEAL_TIME_MS * MAX_WORD_LENGTH + 1,
         })
@@ -272,11 +316,15 @@ function App() {
           setIsHistoryModalOpen={setIsHistoryModalOpen}
           setIsStatsModalOpen={setIsStatsModalOpen}
           setIsSettingsModalOpen={setIsSettingsModalOpen}
+          isPlayingPastGame={isPlayingPastGame}
+          selectedDate={selectedDate}
+          onBackToToday={handleBackToToday}
         />
         <div className="pb-6 overflow-auto flex flex-col">
           <Grid
             guesses={guesses}
             currentGuess={currentGuess}
+            solution={currentSolution}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
             letterStatuses={letterStatuses}
@@ -303,11 +351,13 @@ function App() {
         <HistoryModal
           isOpen={isHistoryModalOpen}
           handleClose={() => setIsHistoryModalOpen(false)}
+          onSelectDate={handleSelectDate}
         />
         <StatsModal
           isOpen={isStatsModalOpen}
           handleClose={() => setIsStatsModalOpen(false)}
           guesses={guesses}
+          solution={currentSolution}
           gameStats={stats}
           isGameLost={isGameLost}
           isGameWon={isGameWon}
@@ -320,7 +370,7 @@ function App() {
           isDarkMode={isDarkMode}
           handleDarkMode={handleDarkMode}
           handleClearNotes={() => {
-            setLetterStatuses(clearLetterStatuses(guesses))
+            setLetterStatuses(clearLetterStatuses(guesses, currentSolution))
             setIsSettingsModalOpen(false)
             showSuccessAlert(CLEAR_NOTES_TEXT)
           }}
