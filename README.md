@@ -2,7 +2,7 @@
 
 A daily word puzzle game built with React, TypeScript, and Tailwind CSS. Players get 15 attempts to guess a 5-letter mystery word, with feedback showing how many letters they have in common with the solution after each guess.
 
-[**Play it live**](https://reactle.vercel.app/)
+[**Play it live**](https://fiveletter.herokuapp.com/)
 
 ## How the Game Works
 
@@ -73,6 +73,7 @@ src/
 ### Daily Word Selection
 
 `lib/words.ts` > `getWordOfDay()`:
+
 - Epoch date: April 1, 2022
 - Calculates days since epoch, indexes into `MYSTERY_ORDER` array to get a word index
 - Also computes `tomorrow` (next word reset time) for the countdown timer
@@ -80,6 +81,7 @@ src/
 ### Scoring
 
 `lib/statuses.ts` > `getGuessScore()`:
+
 - Compares guess letters against solution letters
 - Returns count of letters in common (0-5), or 6 for exact match
 
@@ -93,15 +95,15 @@ src/
 
 ## Tech Stack
 
-| Layer       | Technology                          |
-|-------------|-------------------------------------|
-| Framework   | React 17 (CRA / react-scripts 5)   |
-| Language    | TypeScript (strict mode, ES6 target)|
-| Styling     | Tailwind CSS 3 + custom CSS animations |
-| Modals      | @headlessui/react                   |
-| Icons       | @heroicons/react                    |
-| Formatting  | Prettier (no semis, single quotes)  |
-| Git hooks   | Husky + lint-staged                 |
+| Layer      | Technology                             |
+| ---------- | -------------------------------------- |
+| Framework  | React 17 (CRA / react-scripts 5)       |
+| Language   | TypeScript (strict mode, ES6 target)   |
+| Styling    | Tailwind CSS 3 + custom CSS animations |
+| Modals     | @headlessui/react                      |
+| Icons      | @heroicons/react                       |
+| Formatting | Prettier (no semis, single quotes)     |
+| Git hooks  | Husky + lint-staged                    |
 
 ## Build and Run
 
@@ -121,12 +123,14 @@ npm run build    # Outputs to build/
 ### Docker
 
 **Development:**
+
 ```bash
 docker build -t reactle:dev -f docker/Dockerfile .
 docker run -d -p 3000:3000 --name reactle-dev reactle:dev
 ```
 
 **Production (Nginx):**
+
 ```bash
 docker build --target=prod -t reactle:prod -f docker/Dockerfile .
 docker run -d -p 80:8080 --name reactle-prod reactle:prod
@@ -149,11 +153,11 @@ docker run -d -p 80:8080 --name reactle-prod reactle:prod
 Configured in `.env`:
 
 | Variable                          | Purpose                        |
-|-----------------------------------|--------------------------------|
-| `REACT_APP_GAME_NAME`            | Game title ("High Five")       |
-| `REACT_APP_GAME_DESCRIPTION`     | Meta description               |
-| `REACT_APP_LOCALE_STRING`        | Locale for case conversion     |
-| `REACT_APP_GOOGLE_MEASUREMENT_ID`| Google Analytics 4 tracking ID |
+| --------------------------------- | ------------------------------ |
+| `REACT_APP_GAME_NAME`             | Game title ("High Five")       |
+| `REACT_APP_GAME_DESCRIPTION`      | Meta description               |
+| `REACT_APP_LOCALE_STRING`         | Locale for case conversion     |
+| `REACT_APP_GOOGLE_MEASUREMENT_ID` | Google Analytics 4 tracking ID |
 
 ## Adding a New Feature
 
