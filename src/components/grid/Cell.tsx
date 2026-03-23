@@ -43,6 +43,8 @@ export const Cell = ({
           return 'present'
         case 'present':
           return 'guessed'
+        default:
+          return 'guessed'
       }
     }
 

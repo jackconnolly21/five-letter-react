@@ -12,11 +12,12 @@ const device = parser.getDevice()
 export const shareStatus = (
   guesses: string[],
   lost: boolean,
+  solution: string,
   handleShareToClipboard: () => void
 ) => {
   const textHeader = `${GAME_TITLE} #${solutionIndex}`
   const scoreHeader = `${lost ? 'X' : guesses.length}/${MAX_CHALLENGES}`
-  const textBody = getGuessEmojis(guesses).join('')
+  const textBody = getGuessEmojis(guesses, solution).join('')
   const textToShare = `${textHeader} ${scoreHeader}\n${textBody}`
 
   const shareData = { text: textToShare }
@@ -73,9 +74,9 @@ const copyToClipboard = (textToCopy: string) => {
   }
 }
 
-const getGuessEmojis = (guesses: string[]) => {
+const getGuessEmojis = (guesses: string[], solution: string) => {
   return guesses.map((guess) => {
-    const score = getGuessScore(guess)
+    const score = getGuessScore(guess, solution)
     if (score === 0) {
       return '🟥'
     }

@@ -1,16 +1,16 @@
-import { solution, unicodeSplit } from './words'
+import { unicodeSplit } from './words'
 
 export type CharStatus = 'none' | 'absent' | 'maybe' | 'present' | 'guessed'
 
 export type ResultStatus = 'zero' | 'medium' | 'high' | 'correct'
 export type CharStatusDict = { [char: string]: CharStatus }
 
-export const getGuessScore = (guess: string) => {
-  if (guess === solution) {
+export const getGuessScore = (guess: string, sol: string) => {
+  if (guess === sol) {
     return 6
   }
 
-  const setSolution = new Set(unicodeSplit(solution))
+  const setSolution = new Set(unicodeSplit(sol))
   const setGuess = new Set(unicodeSplit(guess))
 
   return Array.from(setGuess).filter((c) => setSolution.has(c)).length
@@ -35,9 +35,9 @@ export const updateLetterStatus = (
   return updateLetterStatuses(letterStatuses, [letter], newStatus)
 }
 
-export const clearLetterStatuses = (guesses: string[]) => {
+export const clearLetterStatuses = (guesses: string[], sol: string) => {
   const zeroLetters = guesses.reduce((acc, guess) => {
-    if (getGuessScore(guess) === 0) {
+    if (getGuessScore(guess, sol) === 0) {
       unicodeSplit(guess).forEach((c) => acc.add(c))
     }
     return acc

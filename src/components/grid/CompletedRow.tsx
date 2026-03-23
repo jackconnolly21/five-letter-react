@@ -5,6 +5,7 @@ import { MAX_WORD_LENGTH } from '../../constants/settings'
 
 type Props = {
   guess: string
+  solution: string
   isRevealing?: boolean
   letterStatuses: CharStatusDict
   setLetterStatus: (char: string, newStatus: CharStatus) => void
@@ -12,12 +13,13 @@ type Props = {
 
 export const CompletedRow = ({
   guess,
+  solution,
   isRevealing,
   letterStatuses,
   setLetterStatus,
 }: Props) => {
   const splitGuess = unicodeSplit(guess)
-  const guessScore = getGuessScore(guess)
+  const guessScore = getGuessScore(guess, solution)
 
   // Need to update on 0 or 6
   const resultStatus =
