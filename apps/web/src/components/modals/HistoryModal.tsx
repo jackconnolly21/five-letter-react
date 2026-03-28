@@ -6,7 +6,7 @@ import {
 } from '../../lib/localStorage'
 import { getPastSolution, solution, getDateString } from '../../lib/words'
 import { HISTORY_TITLE, NOT_PLAYED_TEXT } from '../../constants/strings'
-import { CheckIcon, XIcon } from '@heroicons/react/outline'
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 type Props = {
   isOpen: boolean
@@ -77,7 +77,7 @@ export const HistoryModal = ({ isOpen, handleClose, onSelectDate }: Props) => {
                 </>
               ) : (
                 <>
-                  <XIcon className="h-4 w-4" />
+                  <XMarkIcon className="h-4 w-4" />
                   missed
                 </>
               )}

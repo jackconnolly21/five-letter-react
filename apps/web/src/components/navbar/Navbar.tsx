@@ -3,7 +3,7 @@ import {
   ClockIcon,
   CogIcon,
   InformationCircleIcon,
-} from '@heroicons/react/outline'
+} from '@heroicons/react/24/outline'
 import { GAME_TITLE } from '../../constants/strings'
 
 type Props = {

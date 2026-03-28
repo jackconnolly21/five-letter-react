@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { Transition } from '@headlessui/react'
 import classNames from 'classnames'
 
@@ -26,7 +25,6 @@ export const Alert = ({
   return (
     <Transition
       show={isOpen}
-      as={Fragment}
       enter="ease-out duration-300 transition"
       enterFrom="opacity-0"
       enterTo="opacity-100"
