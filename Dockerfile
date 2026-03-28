@@ -17,10 +17,8 @@ CMD npm run web
 ## Production image
 FROM nginx:1.26-alpine AS prod
 COPY docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY docker/etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/etc/nginx/conf.d/default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=prod_builder /app/apps/web/dist /usr/share/nginx/html
-COPY docker/build_system.sh .
-RUN ./build_system.sh && rm ./build_system.sh
-# port used by Nginx within docker network.
+# Default port for local Docker; Heroku overrides via $PORT env var
+ENV PORT=8080
 EXPOSE 8080
-USER reactle
