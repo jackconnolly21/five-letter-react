@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@five-letter/game-core": "*",
     "@headlessui/react": "^2.0.0",
     "@heroicons/react": "^2.0.0",
     "@types/node": "^20.0.0",

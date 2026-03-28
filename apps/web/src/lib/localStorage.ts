@@ -1,4 +1,4 @@
-import { CharStatusDict } from './statuses'
+import { CharStatusDict, GameStats } from '@five-letter/game-core'
 
 export type StoredGameState = {
   guesses: string[]
@@ -75,15 +75,6 @@ export const migrateGameState = (todayString: string) => {
 }
 
 const gameStatKey = 'gameStats'
-
-export type GameStats = {
-  winDistribution: number[]
-  gamesFailed: number
-  currentStreak: number
-  bestStreak: number
-  totalGames: number
-  successRate: number
-}
 
 export const saveStatsToLocalStorage = (gameStats: GameStats) => {
   localStorage.setItem(gameStatKey, JSON.stringify(gameStats))
