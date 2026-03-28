@@ -2,7 +2,28 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(cp /Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/app.json /Users/jackconnolly/Documents/Coding/GitHub/react-five-letter/apps/mobile/app.json)",
+      "Bash(cp /Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/babel.config.js /Users/jackconnolly/Documents/Coding/GitHub/react-five-letter/apps/mobile/babel.config.js)",
+      "Bash(cp /Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/tsconfig.json /Users/jackconnolly/Documents/Coding/GitHub/react-five-letter/apps/mobile/tsconfig.json)",
+      "Bash(cp -r /Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/assets /Users/jackconnolly/Documents/Coding/GitHub/react-five-letter/apps/mobile/assets)",
+      "Bash(MOBILE_SRC=\"/Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/src\")",
+      "Bash(MOBILE_DEST=\"/Users/jackconnolly/Documents/Coding/GitHub/react-five-letter/apps/mobile/src\")",
+      "Bash(mkdir -p \"$MOBILE_DEST/components/alerts\" \"$MOBILE_DEST/components/grid\" \"$MOBILE_DEST/components/keyboard\" \"$MOBILE_DEST/components/modals\" \"$MOBILE_DEST/components/navbar\" \"$MOBILE_DEST/components/stats\" \"$MOBILE_DEST/context\" \"$MOBILE_DEST/lib\" \"$MOBILE_DEST/hooks\")",
+      "Bash(cp \"$MOBILE_SRC/components/alerts/AlertContainer.tsx\" \"$MOBILE_DEST/components/alerts/\")",
+      "Bash(cp \"$MOBILE_SRC/components/grid/\"*.tsx \"$MOBILE_DEST/components/grid/\")",
+      "Bash(grep -r \"from ''.*constants/\\\\|from ''.*lib/words\\\\|from ''.*lib/statuses\\\\|from ''.*lib/stats\" /Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/src/components/ /Users/jackconnolly/Documents/Coding/Vibes/five-letter-word-mobile/src/context/)",
+      "Bash(find /Users/jackconnolly/Documents/Coding/GitHub/react-five-letter/apps/mobile/src/components -name *.tsx)",
+      "Bash(cp \"$MOBILE_SRC/components/keyboard/\"*.tsx \"$MOBILE_DEST/components/keyboard/\")",
+      "Bash(cp \"$MOBILE_SRC/components/modals/BaseModal.tsx\" \"$MOBILE_DEST/components/modals/\")",
+      "Bash(cp \"$MOBILE_SRC/components/modals/InfoModal.tsx\" \"$MOBILE_DEST/components/modals/\")",
+      "Bash(cp \"$MOBILE_SRC/components/modals/SettingsModal.tsx\" \"$MOBILE_DEST/components/modals/\")",
+      "Bash(cp \"$MOBILE_SRC/components/modals/StatsModal.tsx\" \"$MOBILE_DEST/components/modals/\")",
+      "Bash(cp \"$MOBILE_SRC/components/stats/\"*.tsx \"$MOBILE_DEST/components/stats/\")",
+      "Bash(cp \"$MOBILE_SRC/context/AlertContext.tsx\" \"$MOBILE_DEST/context/\")",
+      "Bash(python3 -c \":*)",
+      "Bash(npm install:*)",
+      "Bash(echo \"exit code: $?\")"
     ]
   }
 }
