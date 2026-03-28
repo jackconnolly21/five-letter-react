@@ -1,8 +1,9 @@
-import { CharStatusDict, GameStats } from '@five-letter/game-core'
-
-export type StoredGameState = {
-  guesses: string[]
-}
+import {
+  GameStats,
+  StoredGameState,
+  Statuses,
+  GameHistoryEntry,
+} from '@five-letter/game-core'
 
 const allGameStatesKey = 'allGameStates'
 
@@ -87,11 +88,6 @@ export const loadStatsFromLocalStorage = () => {
 
 const statusStatKey = 'statuses'
 
-export type Statuses = {
-  statuses: CharStatusDict
-  date?: string
-}
-
 export const saveStatusesToLocalStorage = (statuses: Statuses) => {
   localStorage.setItem(statusStatKey, JSON.stringify(statuses))
 }
@@ -102,12 +98,6 @@ export const loadStatusesFromLocalStorage = () => {
 }
 
 const gameHistoryKey = 'gameHistory'
-
-export type GameHistoryEntry = {
-  date: string
-  guesses: number
-  won: boolean
-}
 
 export const saveGameHistoryEntry = (entry: GameHistoryEntry) => {
   const history = loadGameHistory()

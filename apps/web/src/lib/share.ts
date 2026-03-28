@@ -1,8 +1,7 @@
 import { solutionIndex } from './words'
 import { GAME_TITLE } from '../constants/strings'
-import { MAX_CHALLENGES } from '../constants/settings'
+import { generateShareText } from '@five-letter/game-core'
 import { UAParser } from 'ua-parser-js'
-import { getGuessScore } from './statuses'
 
 const webShareApiDeviceTypes: string[] = ['mobile', 'smarttv', 'wearable']
 const parser = new UAParser()
@@ -15,10 +14,13 @@ export const shareStatus = (
   solution: string,
   handleShareToClipboard: () => void
 ) => {
-  const textHeader = `${GAME_TITLE} #${solutionIndex}`
-  const scoreHeader = `${lost ? 'X' : guesses.length}/${MAX_CHALLENGES}`
-  const textBody = getGuessEmojis(guesses, solution).join('')
-  const textToShare = `${textHeader} ${scoreHeader}\n${textBody}`
+  const textToShare = generateShareText(
+    GAME_TITLE,
+    solutionIndex,
+    guesses,
+    solution,
+    lost
+  )
 
   const shareData = { text: textToShare }
 
@@ -72,20 +74,4 @@ const copyToClipboard = (textToCopy: string) => {
     }
     textArea.remove()
   }
-}
-
-const getGuessEmojis = (guesses: string[], solution: string) => {
-  return guesses.map((guess) => {
-    const score = getGuessScore(guess, solution)
-    if (score === 0) {
-      return '🟥'
-    }
-    if (score <= 3) {
-      return '🟨'
-    }
-    if (score <= 5) {
-      return '🟩'
-    }
-    return '🎉'
-  })
 }

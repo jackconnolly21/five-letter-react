@@ -26,6 +26,7 @@ import {
   solution,
   getPastSolution,
   getDateString,
+  loadGameForDate,
   unicodeLength,
   unicodeSplit,
 } from './lib/words'
@@ -99,21 +100,11 @@ function App() {
       return loaded.statuses
     }
     // New day or no saved statuses — rebuild from today's guesses
-    const todaySolution = getPastSolution(today)
     const todayGame = loadGameStateFromLocalStorage(todayString)
     if (!todayGame || todayGame.guesses.length === 0) {
       return {}
     }
-    const gameWasWon = todayGame.guesses.includes(todaySolution)
-    let statuses = clearLetterStatuses(todayGame.guesses, todaySolution)
-    if (gameWasWon) {
-      statuses = updateLetterStatuses(
-        statuses,
-        unicodeSplit(todaySolution),
-        'present'
-      )
-    }
-    return statuses
+    return loadGameForDate(today, todayGame.guesses).letterStatuses
   })
 
   const [isRevealing, setIsRevealing] = useState(false)
@@ -196,21 +187,14 @@ function App() {
     saveGameStateToLocalStorage(dateString, { guesses })
 
     const newDateString = getDateString(date)
-    const newSolution = getPastSolution(date)
     const loaded = loadGameStateFromLocalStorage(newDateString)
     const newGuesses = loaded?.guesses ?? []
 
-    const gameWasWon = newGuesses.includes(newSolution)
-    const gameWasLost = newGuesses.length === MAX_CHALLENGES && !gameWasWon
-
-    let newStatuses = clearLetterStatuses(newGuesses, newSolution)
-    if (gameWasWon) {
-      newStatuses = updateLetterStatuses(
-        newStatuses,
-        unicodeSplit(newSolution),
-        'present'
-      )
-    }
+    const {
+      letterStatuses: newStatuses,
+      isGameWon: gameWasWon,
+      isGameLost: gameWasLost,
+    } = loadGameForDate(date, newGuesses)
 
     setSelectedDate(date)
     setGuesses(newGuesses)

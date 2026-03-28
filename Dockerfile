@@ -1,6 +1,7 @@
 FROM node:20-alpine AS node_modules
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY packages/game-core/package.json ./packages/game-core/
 COPY apps/web/package.json ./apps/web/
 RUN npm install
 
