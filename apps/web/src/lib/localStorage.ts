@@ -35,12 +35,17 @@ export const migrateGameState = (todayString: string) => {
   const oldFlat = localStorage.getItem('gameState')
   if (oldFlat) {
     try {
-      const parsed = JSON.parse(oldFlat) as { guesses: string[]; solution?: string }
+      const parsed = JSON.parse(oldFlat) as {
+        guesses: string[]
+        solution?: string
+      }
       if (parsed.guesses && !all[todayString]) {
         all[todayString] = { guesses: parsed.guesses }
         dirty = true
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     localStorage.removeItem('gameState')
   }
 
@@ -56,7 +61,9 @@ export const migrateGameState = (todayString: string) => {
           all[dateStr] = { guesses: parsed.guesses }
           dirty = true
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       keysToRemove.push(key)
     }
   }
@@ -91,6 +98,7 @@ const statusStatKey = 'statuses'
 
 export type Statuses = {
   statuses: CharStatusDict
+  date?: string
 }
 
 export const saveStatusesToLocalStorage = (statuses: Statuses) => {

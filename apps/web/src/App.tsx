@@ -95,10 +95,25 @@ function App() {
 
   const [letterStatuses, setLetterStatuses] = useState<CharStatusDict>(() => {
     const loaded = loadStatusesFromLocalStorage()
-    if (loaded?.statuses === undefined) {
+    if (loaded?.date === todayString && loaded.statuses !== undefined) {
+      return loaded.statuses
+    }
+    // New day or no saved statuses — rebuild from today's guesses
+    const todaySolution = getPastSolution(today)
+    const todayGame = loadGameStateFromLocalStorage(todayString)
+    if (!todayGame || todayGame.guesses.length === 0) {
       return {}
     }
-    return loaded.statuses
+    const gameWasWon = todayGame.guesses.includes(todaySolution)
+    let statuses = clearLetterStatuses(todayGame.guesses, todaySolution)
+    if (gameWasWon) {
+      statuses = updateLetterStatuses(
+        statuses,
+        unicodeSplit(todaySolution),
+        'present'
+      )
+    }
+    return statuses
   })
 
   const [isRevealing, setIsRevealing] = useState(false)
@@ -154,8 +169,8 @@ function App() {
   }, [guesses, dateString])
 
   useEffect(() => {
-    saveStatusesToLocalStorage({ statuses: letterStatuses })
-  }, [letterStatuses])
+    saveStatusesToLocalStorage({ statuses: letterStatuses, date: dateString })
+  }, [letterStatuses, dateString])
 
   useEffect(() => {
     if (isGameWon) {

@@ -1,5 +1,9 @@
 import { BaseModal } from './BaseModal'
-import { loadGameHistory, loadGameStateFromLocalStorage, GameHistoryEntry } from '../../lib/localStorage'
+import {
+  loadGameHistory,
+  loadGameStateFromLocalStorage,
+  GameHistoryEntry,
+} from '../../lib/localStorage'
 import { getPastSolution, solution, getDateString } from '../../lib/words'
 import { HISTORY_TITLE, NOT_PLAYED_TEXT } from '../../constants/strings'
 import { CheckIcon, XIcon } from '@heroicons/react/outline'
@@ -107,7 +111,9 @@ export const HistoryModal = ({ isOpen, handleClose, onSelectDate }: Props) => {
         {renderRow(todayStr, 'Today', solution, todayEntry, true)}
         {pastDays.map((day) => {
           const dateStr = getDateString(day)
-          const entry = history.find((h: GameHistoryEntry) => h.date === dateStr)
+          const entry = history.find(
+            (h: GameHistoryEntry) => h.date === dateStr
+          )
           const word = getPastSolution(day)
           const label = day.toLocaleDateString('en-US', {
             weekday: 'short',
