@@ -23,7 +23,10 @@
       "Bash(cp \"$MOBILE_SRC/context/AlertContext.tsx\" \"$MOBILE_DEST/context/\")",
       "Bash(python3 -c \":*)",
       "Bash(npm install:*)",
-      "Bash(echo \"exit code: $?\")"
+      "Bash(echo \"exit code: $?\")",
+      "Bash(export PATH=\"/usr/local/bin:$PATH\")",
+      "Bash(npm ls:*)",
+      "Bash(pod install:*)"
     ]
   }
 }

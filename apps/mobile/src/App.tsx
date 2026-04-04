@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { View, StyleSheet, ActivityIndicator, StatusBar } from 'react-native'
+import analytics from '@react-native-firebase/analytics'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { Grid } from './components/grid/Grid'
 import { Keyboard } from './components/keyboard/Keyboard'
@@ -369,6 +370,10 @@ const GameScreen = () => {
 }
 
 export default function App() {
+  useEffect(() => {
+    analytics().logEvent('app_open')
+  }, [])
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>
