@@ -1,12 +1,12 @@
 import { Share } from 'react-native'
 import { generateShareText } from '@five-letter/game-core'
-import { solutionIndex } from './words'
 import { GAME_TITLE } from '../constants/strings'
 
 export const shareStatus = async (
   guesses: string[],
   solution: string,
   lost: boolean,
+  solutionIndex: number,
   handleShareToClipboard: () => void
 ) => {
   const text = generateShareText(

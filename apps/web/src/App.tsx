@@ -25,6 +25,7 @@ import {
   isWinningWord,
   solution,
   getPastSolution,
+  getSolutionIndex,
   getDateString,
   loadGameForDate,
   unicodeLength,
@@ -91,6 +92,7 @@ function App() {
 
   const [selectedDate, setSelectedDate] = useState<Date>(today)
   const currentSolution = getPastSolution(selectedDate)
+  const currentSolutionIndex = getSolutionIndex(selectedDate)
   const dateString = getDateString(selectedDate)
   const isPlayingPastGame = dateString !== todayString
 
@@ -357,6 +359,7 @@ function App() {
           handleClose={() => setIsStatsModalOpen(false)}
           guesses={guesses}
           solution={currentSolution}
+          solutionIndex={currentSolutionIndex}
           gameStats={stats}
           isGameLost={isGameLost}
           isGameWon={isGameWon}

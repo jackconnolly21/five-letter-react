@@ -22,6 +22,7 @@ type Props = {
   handleClose: () => void
   guesses: string[]
   solution: string
+  solutionIndex: number
   gameStats: GameStats
   isGameLost: boolean
   isGameWon: boolean
@@ -34,6 +35,7 @@ export const StatsModal = ({
   handleClose,
   guesses,
   solution,
+  solutionIndex,
   gameStats,
   isGameLost,
   isGameWon,
@@ -98,7 +100,13 @@ export const StatsModal = ({
           <Pressable
             style={styles.shareBtn}
             onPress={() =>
-              shareStatus(guesses, solution, isGameLost, handleShareToClipboard)
+              shareStatus(
+                guesses,
+                solution,
+                isGameLost,
+                solutionIndex,
+                handleShareToClipboard
+              )
             }
           >
             <Text style={styles.shareBtnText}>{SHARE_TEXT}</Text>

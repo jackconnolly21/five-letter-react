@@ -42,6 +42,8 @@ const EPOCH_MS = new Date(2022, 3, 1).valueOf()
 const MS_IN_DAY = 86400000
 const getOrderIndex = (ms: number) => Math.floor((ms - EPOCH_MS) / MS_IN_DAY)
 
+export const getSolutionIndex = (d: Date): number => getOrderIndex(d.valueOf())
+
 export const getWordOfDay = () => {
   const epoch = new Date(2022, 3, 1)
   const start = new Date(epoch)

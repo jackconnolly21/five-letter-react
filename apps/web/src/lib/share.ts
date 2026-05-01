@@ -1,4 +1,3 @@
-import { solutionIndex } from './words'
 import { GAME_TITLE } from '../constants/strings'
 import { generateShareText } from '@five-letter/game-core'
 import { UAParser } from 'ua-parser-js'
@@ -12,6 +11,7 @@ export const shareStatus = (
   guesses: string[],
   lost: boolean,
   solution: string,
+  solutionIndex: number,
   handleShareToClipboard: () => void
 ) => {
   const textToShare = generateShareText(
